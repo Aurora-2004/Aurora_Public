@@ -1,0 +1,148 @@
+
+local Maid, Connections = {}, {}
+
+Maid.Connections, Maid.Threads, Maid.Functions = {}, {}, {}
+
+---~Connections~---
+
+function Maid.Connections:Create(Name, Callback)
+
+	Connections[Name] = {Function = Callback}
+	
+end
+
+function Maid.Connections:GetConnection(Name)
+
+	return Maid.Connections[Name]
+	
+end
+
+function Maid.Connections:GetAllConnections()
+
+	return Maid.Connections
+	
+end
+
+function Maid.Connections:Disconnect(Name)
+
+	local Connection = Maid.Connections:GetConnection(Name)
+
+	if not Connection then
+
+		return
+
+	end
+
+	if typeof(Connection) == "table" and typeof(Connection.Function) == "RBXScriptConnection" then
+
+		Connection:Disconnect()
+
+	end
+
+	Connection = nil
+	
+end
+
+function Maid.Connections:DisableConnection(List)
+
+	List = typeof(List) ~= "table" and {List} or List
+
+	for i, v in next, List do
+
+		Maid.Connections:Disconnect(v)
+	
+	end
+	
+end
+
+---~Threads~---
+
+function Maid.Threads:Create(Callback)
+	
+	coroutine.resume(coroutine.create(Callback))
+	
+end
+
+---~Functions~---
+
+function Maid.Functions:MergeTables(Table_1, Table_2)
+
+	for i, v in next, Table_2 do
+
+		Table_1[#Table_1 + 1] = v
+
+	end
+
+	return Table_1
+	
+end
+
+function Maid.Functions:Create(ToMake, Parent, Props)
+
+    local Created, Props = Instance.new(ToMake, Parent), Props or {}
+
+    for i, v in next, Props do
+
+        Created[i] = v
+
+    end
+
+    return Created
+
+end
+
+function Maid.Functions:IsNetworkOwnerOfModel(Model)
+
+    for i, v in next, Model:GetChildren() do
+
+        if v:IsA"BasePart" and v.ReceiveAge == 0 then
+
+            return true
+
+        end
+
+    end
+
+    return false
+
+end
+
+function Maid.Functions:Wait(Time)
+
+	local Start, Time = DateTime.now().UnixTimestamp, Time or 0
+	
+	while game:GetService"RunService".Stepped:Wait() do
+	
+		if Time <= DateTime.now().UnixTimestamp - Start then
+			
+			return DateTime.now().UnixTimestamp - Start
+			
+		end
+		
+	end
+	
+end
+
+function Maid.Functions:FireTouchInterest(Part, TouchInterest)
+
+    firetouchinterest(Part, TouchInterest, 0)
+
+    firetouchinterest(Part, TouchInterest, 1)
+
+end
+
+function Maid.Functions:Distance(Part1, Part2)
+
+    return (Part1.CFrame.p - Part2.CFrame.p).Magnitude
+
+end
+
+function Maid.Functions:FireRemote(Remote, ...)
+
+    local A, B = Remote:IsA"RemoteEvent" and Remote:FireServer(...) or Remote:IsA"RemoteFunction" and Remote:InvokeServer(...)
+
+	return A, B
+
+end
+
+return Maid
