@@ -1,0 +1,43 @@
+return {
+    ["Volcano"] = {["Log"] = "$3.5", ["Plank"] = "$28"},
+
+    ["Frost"] = {["Log"] = "$9", ["Plank"] = "$106"},
+
+    ["Cavecrawler"] = {["Log"] = "$5.1", ["Plank"] = "$35"},
+
+    ["SnowGlow"] = {["Log"] = "$1.5", ["Plank"] = "$10"},
+
+    ["GoldSwampy"] = {["Log"] = "$5.7", ["Plank"] = "$36"},
+
+    ["GreenSwampy"] = {["Log"] = "$4.4", ["Plank"] = "$30"},
+
+    ["Generic"] = {["Log"] = "$3.5", ["Plank"] = "$10"},
+
+    ["Cherry"] = {["Log"] = "$1.3", ["Plank"] = "$11"},
+
+    ["Oak"] = {["Log"] = "$0.75", ["Plank"] = "$6"},
+
+    ["Birch"] = {["Log"] = "$2.25", ["Plank"] = "$15"},
+
+    ["Walnut"] = {["Log"] = "$1.25", ["Plank"] = "$11"},
+
+    ["Koa"] = {["Log"] = "$10", ["Plank"] = "$26"},
+
+    ["Fir"] = {["Log"] = "$3.2", ["Plank"] = "$18"},
+
+    ["Pine"] = {["Log"] = "$3.2", ["Plank"] = "$18"},
+
+    ["Palm"] = {["Log"] = "5.6", ["Plank"] = "$32"},
+
+    ["Test"] = {["Log"] = "$3.0", ["Plank"] = "$5.8"},
+
+    ["Grey"] = {["Log"] = "$0", ["Plank"] = "$0"},
+
+    ["Pink"] = {["Log"] = "$0", ["Plank"] = "$0"},
+
+    ["LoneCave"] = {["Log"] = "$150", ["Plank"] = "$420"},
+
+    ["Spooky"] = {["Log"] = "$19", ["Plank"] = "$54"},
+
+    ["SpookyNeon"] = {["Log"] = "$25", ["Plank"] = "$90"},
+}
