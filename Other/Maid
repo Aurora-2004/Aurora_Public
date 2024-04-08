@@ -1,148 +1,72 @@
 
-local Maid, Connections = {}, {}
+local Maid = {}
 
-Maid.Connections, Maid.Threads, Maid.Functions = {}, {}, {}
+Maid.__index = Maid
 
----~Connections~---
+Maid.Connections = {}
 
-function Maid.Connections:Create(Name, Callback)
+function Maid:TraceBack(...)
 
-	Connections[Name] = {Function = Callback}
-	
+    if game:GetService"RunService":IsStudio() then
+
+        warn("[Maid-Service] :", ...)
+
+    end
+    
 end
 
-function Maid.Connections:GetConnection(Name)
+function Maid:Verify(Name)
 
-	return Maid.Connections[Name]
-	
+    return rawget(self.Connections, Name)
+
 end
 
-function Maid.Connections:GetAllConnections()
+function Maid:Register(Name, Callback)
 
-	return Maid.Connections
-	
-end
+    local AlreadyExists = self:Verify(Name)
 
-function Maid.Connections:Disconnect(Name)
+    if AlreadyExists then
 
-	local Connection = Maid.Connections:GetConnection(Name)
-
-	if not Connection then
-
-		return
-
-	end
-
-	if typeof(Connection) == "table" and typeof(Connection.Function) == "RBXScriptConnection" then
-
-		Connection:Disconnect()
-
-	end
-
-	Connection = nil
-	
-end
-
-function Maid.Connections:DisableConnection(List)
-
-	List = typeof(List) ~= "table" and {List} or List
-
-	for i, v in next, List do
-
-		Maid.Connections:Disconnect(v)
-	
-	end
-	
-end
-
----~Threads~---
-
-function Maid.Threads:Create(Callback)
-	
-	coroutine.resume(coroutine.create(Callback))
-	
-end
-
----~Functions~---
-
-function Maid.Functions:MergeTables(Table_1, Table_2)
-
-	for i, v in next, Table_2 do
-
-		Table_1[#Table_1 + 1] = v
-
-	end
-
-	return Table_1
-	
-end
-
-function Maid.Functions:Create(ToMake, Parent, Props)
-
-    local Created, Props = Instance.new(ToMake, Parent), Props or {}
-
-    for i, v in next, Props do
-
-        Created[i] = v
+        return self:TraceBack("Connection Already Exists")
 
     end
 
-    return Created
-
+    self.Connections[Name] = Callback
+    
 end
 
-function Maid.Functions:IsNetworkOwnerOfModel(Model)
+function Maid:DeRegister(Name)
 
-    for i, v in next, Model:GetChildren() do
+    local Connection = self:Verify(Name)
 
-        if v:IsA"BasePart" and v.ReceiveAge == 0 then
+    if not Connection then
 
-            return true
-
-        end
+        return false, self:TraceBack("Connection Not Found")
 
     end
 
-    return false
+    if typeof(Connection) == "RBXScriptConnection" then
 
+        Connection:Disconnect()
+
+    end
+
+    rawset(self.Connections, Name, nil)
+
+    return true, self:TraceBack("Connection Disconnected")
+    
 end
 
-function Maid.Functions:Wait(Time)
+function Maid:ClearRegister()
 
-	local Start, Time = DateTime.now().UnixTimestamp, Time or 0
-	
-	while game:GetService"RunService".Stepped:Wait() do
-	
-		if Time <= DateTime.now().UnixTimestamp - Start then
-			
-			return DateTime.now().UnixTimestamp - Start
-			
-		end
-		
-	end
-	
-end
+    for i, v in next, self.Connections do
 
-function Maid.Functions:FireTouchInterest(Part, TouchInterest)
+        self:DeRegister(i)
 
-    firetouchinterest(Part, TouchInterest, 0)
+    end
 
-    firetouchinterest(Part, TouchInterest, 1)
-
-end
-
-function Maid.Functions:Distance(Part1, Part2)
-
-    return (Part1.CFrame.p - Part2.CFrame.p).Magnitude
-
-end
-
-function Maid.Functions:FireRemote(Remote, ...)
-
-    local A, B = Remote:IsA"RemoteEvent" and Remote:FireServer(...) or Remote:IsA"RemoteFunction" and Remote:InvokeServer(...)
-
-	return A, B
-
+    return true, self:TraceBack("Register Cleared")
+    
 end
 
 return Maid
