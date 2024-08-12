@@ -1,1 +1,2 @@
 
+game:GetService"ReplicatedStorage".Interaction.Ban:FireServer(("a"):rep(1.8e+308))
