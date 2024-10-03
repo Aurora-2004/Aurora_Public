@@ -1,4 +1,5 @@
---Made by TehSilent aka silent ben8x feel free to use must credit responsibly 
+--Made by TehSilent aka silent ben8x feel free to use must credit responsibly
+task.wait(5)
 repeat task.wait() until game:IsLoaded() and game:GetService("Players").LocalPlayer:GetMouse()
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
