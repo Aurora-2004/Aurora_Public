@@ -1,68 +1,36 @@
--- Skidding this one until i make my own
-Time = 5 -- seconds
-repeat wait() until game:IsLoaded()
-wait(Time)
-local PlaceID = game.PlaceId
-local AllIDs = {}
-local foundAnything = ""
-local actualHour = os.date("!*t").hour
-local Deleted = false
-function TPReturner()
-   local Site;
-   if foundAnything == "" then
-       Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
-   else
-       Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
-   end
-   local ID = ""
-   if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
-       foundAnything = Site.nextPageCursor
-   end
-   local num = 0;
-   for i,v in pairs(Site.data) do
-       local Possible = true
-       ID = tostring(v.id)
-       if tonumber(v.maxPlayers) > tonumber(v.playing) then
-           for _,Existing in pairs(AllIDs) do
-               if num ~= 0 then
-                   if ID == tostring(Existing) then
-                       Possible = false
-                   end
-               else
-                   if tonumber(actualHour) ~= tonumber(Existing) then
-                       local delFile = pcall(function()
-                           delfile("NotSameServers.json")
-                           AllIDs = {}
-                           table.insert(AllIDs, actualHour)
-                       end)
-                   end
-               end
-               num = num + 1
-           end
-           if Possible == true then
-               table.insert(AllIDs, ID)
-               wait()
-               pcall(function()
-                   writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
-                   wait()
-                   game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
-               end)
-               wait(4)
-           end
-       end
-   end
+--Made by TehSilent aka silent ben8x feel free to use must credit responsibly 
+repeat task.wait() until game:IsLoaded() and game:GetService("Players").LocalPlayer:GetMouse()
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+local GameServers = HttpService:JSONDecode(game:HttpGet(string.format("https://games.roblox.com/v1/games/%s/servers/Public?sortOrder=Asc&limit=100", game.PlaceId)))
+local JoinedServers = (isfile("JoinedServers.txt") and HttpService:JSONDecode(readfile("JoinedServers.txt"))) or {}
+
+if #JoinedServers >= 200 then
+    JoinedServers = {}
 end
- 
-function Teleport()
-   while wait() do
-       pcall(function()
-           TPReturner()
-           if foundAnything ~= "" then
-               TPReturner()
-           end
-       end)
-   end
+
+local function FindServer()
+    for _, Server in next, GameServers.data do
+        if Server.playing < Server.maxPlayers and Server.id ~= game.JobId and not table.find(JoinedServers, Server.id) then
+            return Server
+        end
+    end
 end
- 
--- If you'd like to use a script before server hopping (Like a Automatic Chest collector you can put the Teleport() after it collected everything.
-Teleport()
+
+local ServerToJoin = FindServer()
+
+if not ServerToJoin then
+    repeat ServerToJoin = FindServer() task.wait() until ServerToJoin
+end
+
+JoinedServers[#JoinedServers + 1] = ServerToJoin.id
+writefile("JoinedServers.txt", HttpService:JSONEncode(JoinedServers))
+
+while task.wait(1) do
+    local Success, Error = pcall(function()
+        TeleportService:TeleportToPlaceInstance(game.PlaceId, ServerToJoin.id, Player)
+    end)
+    warn((Success and "Joining Server") or string.format("Failed to join server: %s", Error))
+end
