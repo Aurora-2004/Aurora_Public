@@ -33,5 +33,6 @@ while task.wait(1) do
     local Success, Error = pcall(function()
         TeleportService:TeleportToPlaceInstance(game.PlaceId, ServerToJoin.id, Player)
     end)
+    ServerToJoin = FindServer()
     warn((Success and "Joining Server") or string.format("Failed to join server: %s", Error))
 end
