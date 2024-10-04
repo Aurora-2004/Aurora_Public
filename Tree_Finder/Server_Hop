@@ -1,4 +1,5 @@
 --Made by TehSilent aka silent ben8x feel free to use must credit responsibly
+
 repeat task.wait() until game:IsLoaded() and game:GetService("Players").LocalPlayer and game:GetService("Players").LocalPlayer:GetMouse()
 task.wait(10)
 local Players = game:GetService("Players")
@@ -13,28 +14,28 @@ if #JoinedServers >= 200 then
 end
 
 local function FindServer()
-    for _, Server in next, GameServers.data or {} do
+    for _, Server in next, GameServers.data do
         if Server.playing < Server.maxPlayers and Server.id ~= game.JobId and not table.find(JoinedServers, Server.id) then
             return Server
         end
     end
 end
 
-local function GetServer()
-    local ServerToJoin = FindServer()
-    if ServerToJoin and ServerToJoin.playing >= ServerToJoin.maxPlayers then
-        repeat ServerToJoin = FindServer() task.wait() until ServerToJoin and ServerToJoin.playing < ServerToJoin.maxPlayers
-    end
-    return ServerToJoin
+local ServerToJoin = FindServer()
+
+if not ServerToJoin then
+    repeat ServerToJoin = FindServer() task.wait() until ServerToJoin
 end
 
-while task.wait(1) do
-    local Server = GetServer()
-    JoinedServers[#JoinedServers + 1] = Server.id
-    writefile("JoinedServers.txt", HttpService:JSONEncode(JoinedServers))
-    print("Re-Joining")
+print("Found server")
+
+JoinedServers[#JoinedServers + 1] = ServerToJoin.id
+writefile("JoinedServers.txt", HttpService:JSONEncode(JoinedServers))
+
+while task.wait() do
     local Success, Error = pcall(function()
-        TeleportService:TeleportToPlaceInstance(game.PlaceId, Server.id, Player)
+        TeleportService:TeleportToPlaceInstance(game.PlaceId, ServerToJoin.id, Player)
     end)
+    ServerToJoin = FindServer()
     warn((Success and "Joining Server") or string.format("Failed to join server: %s", Error))
 end
