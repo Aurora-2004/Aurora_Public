@@ -1,7 +1,6 @@
 --Made by TehSilent aka silent ben8x feel free to use must credit responsibly
 repeat task.wait() until game:IsLoaded() and game:GetService("Players").LocalPlayer and game:GetService("Players").LocalPlayer:GetMouse()
-task.wait(5)
-print("rejoining")
+task.wait(10)
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local HttpService = game:GetService("HttpService")
@@ -14,7 +13,7 @@ if #JoinedServers >= 200 then
 end
 
 local function FindServer()
-    for _, Server in next, GameServers.data do
+    for _, Server in next, GameServers.data or {} do
         if Server.playing < Server.maxPlayers and Server.id ~= game.JobId and not table.find(JoinedServers, Server.id) then
             return Server
         end
