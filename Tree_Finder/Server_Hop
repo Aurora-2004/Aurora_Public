@@ -1,7 +1,7 @@
 --Made by TehSilent aka silent ben8x feel free to use must credit responsibly
 task.wait(10)
-print("attempting rejoin")
-repeat task.wait() until game:IsLoaded() and game:GetService("Players").LocalPlayer.Character and game:GetService("Players").LocalPlayer:GetMouse()
+print("rejoining")
+repeat task.wait() until game:IsLoaded() and game:GetService("Players").LocalPlayer:GetMouse()
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local HttpService = game:GetService("HttpService")
@@ -27,10 +27,12 @@ if not ServerToJoin then
     repeat ServerToJoin = FindServer() task.wait() until ServerToJoin
 end
 
+print("Found server")
+
 JoinedServers[#JoinedServers + 1] = ServerToJoin.id
 writefile("JoinedServers.txt", HttpService:JSONEncode(JoinedServers))
 
-while task.wait(1) do
+while task.wait() do
     local Success, Error = pcall(function()
         TeleportService:TeleportToPlaceInstance(game.PlaceId, ServerToJoin.id, Player)
     end)
