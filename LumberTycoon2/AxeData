@@ -4,7 +4,6 @@ local AxeData = {
 
         Damage = 0.55,
 
-
     },
 
     ["Axe2"] = {
