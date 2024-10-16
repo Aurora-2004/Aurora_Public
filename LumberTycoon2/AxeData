@@ -57,15 +57,15 @@ local AxeData = {
 
     ["EndTimesAxe"] = {
 
-        Damage = 1.58
-        SpecialTrees["LoneCave"] = {Damage = 1e7}
+        Damage = 1.58,
+        SpecialTrees["LoneCave"] = {Damage = 1e7},
 
     },
 
     ["FireAxe"] = {
 
-        Damage = 0.6
-        SpecialTrees["Volcano"] = {Damage = 6.35}
+        Damage = 0.6,
+        SpecialTrees["Volcano"] = {Damage = 6.35},
 
     },
 
