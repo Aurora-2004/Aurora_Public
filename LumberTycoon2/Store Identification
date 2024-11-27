@@ -1,0 +1,7 @@
+return {
+
+  ["Seranok"] = 14, 
+  ["Hoover"] = 13 , 
+  ["Stange Man"] = 6,
+
+}
