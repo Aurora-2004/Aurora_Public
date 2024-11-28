@@ -1,48 +1,72 @@
 
-local maid = {}
-local connections = {}
-local runService = game:GetService("RunService")
+local Maid = {}
 
-function maid:traceBack(...)
-    --if runService:IsStudio() then
-        warn("[Maid Service] :", ...)
-   -- end
-end
+Maid.__index = Maid
 
-function maid:verify(name)
-    return connections[name]
-end
+Maid.Connections = {}
 
-function maid:count()
-    return #connections
-end
+function Maid:TraceBack(...)
 
-function maid:register(name, callback)
-    local connectionExists = self:verify(name)
-    if connectionExists then
-        return false, self:traceBack(name, "already exists")
-    end
-    connections[name] = callback
-end
+    if game:GetService"RunService":IsStudio() then
 
-function maid:deRegister(name)
-    local connection = self:verify(name)
-    if not connection then
-        return false, self:traceBack(name, "not found")
+        warn("[Maid-Service] :", ...)
+
     end
     
-    if typeof(connection) == "RBXScriptConnection" then
-        connection:Disconnect()
-    end
-    connections[name] = nil
-    return self:traceBack(name, "disconnected")
 end
 
-function maid:clearRegister()
-    for _, connection in next, connections do
-        self:deRegister(connection)
-    end
-    return self:traceBack("cleared register")
+function Maid:Verify(Name)
+
+    return rawget(self.Connections, Name)
+
 end
 
-return maid
+function Maid:Register(Name, Callback)
+
+    local AlreadyExists = self:Verify(Name)
+
+    if AlreadyExists then
+
+        return self:TraceBack("Connection Already Exists")
+
+    end
+
+    self.Connections[Name] = Callback
+    
+end
+
+function Maid:DeRegister(Name)
+
+    local Connection = self:Verify(Name)
+
+    if not Connection then
+
+        return false, self:TraceBack("Connection Not Found")
+
+    end
+
+    if typeof(Connection) == "RBXScriptConnection" then
+
+        Connection:Disconnect()
+
+    end
+
+    rawset(self.Connections, Name, nil)
+
+    return true, self:TraceBack("Connection Disconnected")
+    
+end
+
+function Maid:ClearRegister()
+
+    for i, v in next, self.Connections do
+
+        self:DeRegister(i)
+
+    end
+
+    return true, self:TraceBack("Register Cleared")
+    
+end
+
+return Maid
