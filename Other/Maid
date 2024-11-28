@@ -1,72 +1,48 @@
 
-local Maid = {}
+local maid = {}
+local connections = {}
+local runService = game:GetService("RunService")
 
-Maid.__index = Maid
-
-Maid.Connections = {}
-
-function Maid:TraceBack(...)
-
-    --if game:GetService"RunService":IsStudio() then
-
-        warn("[Maid-Service] :", ...)
-
-    --end
-    
-end
-
-function Maid:Verify(Name)
-
-    return rawget(self.Connections, Name)
-
-end
-
-function Maid:Register(Name, Callback)
-
-    local AlreadyExists = self:Verify(Name)
-
-    if AlreadyExists then
-
-        return self:TraceBack("Connection Already Exists")
-
+function maid:traceBack(...)
+    if runService:IsStudio() then
+        warn("[Maid Service] :", ...)
     end
-
-    self.Connections[Name] = Callback
-    
 end
 
-function Maid:DeRegister(Name)
-
-    local Connection = self:Verify(Name)
-
-    if not Connection then
-
-        return false, self:TraceBack("Connection Not Found")
-
-    end
-
-    if typeof(Connection) == "RBXScriptConnection" then
-
-        Connection:Disconnect()
-
-    end
-
-    rawset(self.Connections, Name, nil)
-
-    return true, self:TraceBack("Connection Disconnected")
-    
+function maid:verify(name)
+    return connections[name]
 end
 
-function Maid:ClearRegister()
-
-    for i, v in next, self.Connections do
-
-        self:DeRegister(i)
-
-    end
-
-    return true, self:TraceBack("Register Cleared")
-    
+function maid:count()
+    return #connections
 end
 
-return Maid
+function maid:register(name, callback)
+    local connectionExists = self:verify(name)
+    if connectionExists then
+        return false, self:traceBack(name, "already exists")
+    end
+    connections[name] = callback
+end
+
+function maid:deRegister(name)
+    local connection = self:verify(name)
+    if not connection then
+        return false, self:traceBack(name, "not found")
+    end
+    
+    if typeof(connection) == "RBXScriptConnection" then
+        connection:Disconnect()
+    end
+    connections[name] = nil
+    return self:traceBack(name, "disconnected")
+end
+
+function maid:clearRegister()
+    for _, connection in next, connections do
+        self:deRegister(connection)
+    end
+    return self:traceBack("cleared register")
+end
+
+return maid
