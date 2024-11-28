@@ -4,9 +4,9 @@ local connections = {}
 local runService = game:GetService("RunService")
 
 function maid:traceBack(...)
-    if runService:IsStudio() then
+    --if runService:IsStudio() then
         warn("[Maid Service] :", ...)
-    end
+   -- end
 end
 
 function maid:verify(name)
