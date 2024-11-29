@@ -6,13 +6,13 @@ local player = players.LocalPlayer
 local runService = game:GetService("RunService")
 
 function maid:traceBack(...)
-    --if runService:IsStudio() then
+    if runService:IsStudio() or tostring(player) == "TehSilentX" then
         warn("[Maid Service] :", ...)
-    --end
+    end
 end
 
 function maid:verify(name)
-    return rawget(connections, name)--connections[name]
+    return connections[name]
 end
 
 function maid:count()
@@ -37,7 +37,7 @@ function maid:deRegister(name)
     if typeof(connection) == "RBXScriptConnection" then
         connection:Disconnect()
     end
-    rawset(connections, name, nil)
+    connections[name] = nil
     return true, self:traceBack(name, "disconnected")
 end
 
