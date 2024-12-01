@@ -1,5 +1,11 @@
 return {
 
+  ["Thom"] = 7,
+  ["Corey"] = 8,
+  ["Jenny"] = 9,
+  ["Bob"] = 10,
+  ["Lincoln"] = 12,
+  ["Timothy"] = 11,
   ["Seranok"] = 14, 
   ["Hoover"] = 13, 
   ["Stange Man"] = 6,
