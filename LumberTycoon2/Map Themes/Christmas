@@ -1,0 +1,43 @@
+
+local regions = {}
+for _, region in next, workspace:GetChildren() do
+    if region.Name:match("Region_") then
+        regions[#regions + 1] = region
+    end
+end
+
+for _, region in next, regions do
+    for _, basePart in next, region:GetDescendants() do
+        if basePart.Name == "Ground" or basePart.Name == "Slate" then
+            if basePart:IsA("UnionOperation") then
+                basePart.UsePartColor = true
+            end
+            local material = (basePart.Name == "Ground" and "SmoothPlastic") or "Slate"
+            basePart.BrickColor = BrickColor.new("Institutional white")
+            basePart.Material = Enum.Material[material]
+        end
+    end
+end
+
+for _, water in next, workspace.Water:GetChildren() do
+    if water.Name == "Water" then
+        water.BrickColor = BrickColor.new("Bright blue")
+    end
+end
+
+local snowPart = Instance.new("Part", workspace)
+snowPart.Position = Vector3.new(236, 100, 11.5)
+snowPart.Size = Vector3.new(1619, 2, 1356)
+snowPart.Name = "SnowPart"
+snowPart.Transparency = 1
+snowPart.CanCollide = false
+snowPart.Anchored = true
+
+local snowEmitter = Instance.new("ParticleEmitter", snowPart)
+snowEmitter.Texture = "rbxassetid://15667948117"
+snowEmitter.EmissionDirection = Enum.NormalId.Bottom
+snowEmitter.Lifetime = NumberRange.new(100, 100)
+snowEmitter.SpreadAngle = Vector2.new(-30, 30)
+snowEmitter.Speed = NumberRange.new(5, 5)
+snowEmitter.Rate = 500
+snowEmitter.LockedToPart = true
