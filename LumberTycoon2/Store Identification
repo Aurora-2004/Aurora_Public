@@ -12,7 +12,7 @@ local function getProperty(owner)
 end
 
 local function basePlateDestroy()
-    local property = getProperty(player)
+    local property = getProperty()
     if not property then
         return
     end
